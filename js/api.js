@@ -1,9 +1,11 @@
-// js/api.js
+// 👉 Constante URL_BASE com o valor exato solicitado
+const URL_BASE = "http://localhost:3000";
 
 const api = {
   async buscarPensamentos() {
     try {
-      const response = await fetch('http://localhost:3000/pensamentos')
+      // Usando template string para juntar a URL_BASE com o caminho específico
+      const response = await fetch(`${URL_BASE}/pensamentos`)
       return await response.json()
     }
     catch (error) {
@@ -14,7 +16,7 @@ const api = {
 
   async salvarPensamento(pensamento) {
     try {
-      const response = await fetch('http://localhost:3000/pensamentos', {
+      const response = await fetch(`${URL_BASE}/pensamentos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pensamento)
@@ -27,10 +29,9 @@ const api = {
     }
   },
 
-  // 👇 NOVO MÉTODO: Busca um pensamento específico pelo ID
   async buscarPensamentoPorId(id) {
     try {
-      const response = await fetch(`http://localhost:3000/pensamentos/${id}`)
+      const response = await fetch(`${URL_BASE}/pensamentos/${id}`)
       return await response.json()
     }
     catch (error) {
@@ -39,10 +40,9 @@ const api = {
     }
   },
 
-  // 👇 NOVO MÉTODO: Atualiza um pensamento existente usando o método PUT
   async editarPensamento(pensamento) {
     try {
-      const response = await fetch(`http://localhost:3000/pensamentos/${pensamento.id}`, {
+      const response = await fetch(`${URL_BASE}/pensamentos/${pensamento.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pensamento)
@@ -51,6 +51,18 @@ const api = {
     }
     catch (error) {
       alert('Erro ao editar pensamento')
+      throw error
+    }
+  },
+
+  async excluirPensamento(id) {
+    try {
+      await fetch(`${URL_BASE}/pensamentos/${id}`, {
+        method: 'DELETE'
+      });
+    }
+    catch (error) {
+      alert('Erro ao excluir pensamento')
       throw error
     }
   }
