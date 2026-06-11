@@ -8,29 +8,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const formularioPensamento = document.getElementById("pensamento-form");
     const botaoCancelar = document.getElementById("botao-cancelar");
 
-    // Agora o JavaScript vai encontrar as funções perfeitamente abaixo
     formularioPensamento.addEventListener("submit", manipularSubmissaoFormulario);
     botaoCancelar.addEventListener("click", manipularCancelamento);
 });
 
 async function manipularSubmissaoFormulario(event) {
-    event.preventDefault(); // Removido o preventDefault duplicado que estava aqui
+    event.preventDefault();
     
     const id = document.getElementById("pensamento-id").value;
     const conteudo = document.getElementById("pensamento-conteudo").value;
     const autoria = document.getElementById("pensamento-autoria").value;
     
     try {
-        await api.salvarPensamento({ conteudo, autoria });
+        // 👇 NOVO: Verifica se há um ID para decidir entre editar ou salvar
+        if (id) {
+            // Se houver um ID, atualiza o pensamento existente
+            await api.editarPensamento({ id, conteudo, autoria });
+        } else {
+            // Caso contrário, cria um novo pensamento
+            await api.salvarPensamento({ conteudo, autoria });
+        }
         
-        // Limpa o formulário após salvar com sucesso
+        // Limpa o formulário (e redefine o botão para "Adicionar")
         ui.limparFormulario(); 
         
-        // Atualiza a lista na tela
-        ui.renderizarPensamentos();
+        // Renderiza os pensamentos novamente após a edição ou salvamento
+        await ui.renderizarPensamentos();
     }
     catch (error) {
-        alert("Erro ao salvar pensamento");
+        alert("Erro ao salvar ou editar pensamento");
     }
 }
 
